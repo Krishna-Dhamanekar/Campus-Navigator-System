@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIT Tech Campus Navigator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>CIT TECH CAMPUS NAVIGATOR</h1>
+
+    <div class="controls">
+
+        <select id="source">
+            <option value="0">AI Block</option>
+            <option value="1">Innovation Hub</option>
+            <option value="2">Central Library</option>
+            <option value="3">Research Center</option>
+            <option value="4">Hostel</option>
+            <option value="5">DKM Block</option>
+            <option value="6">Main Block</option>
+            <option value="7">Robotics Lab</option>
+            <option value="8">3D Galactic Area</option>
+            <option value="9">Sports Complex</option>
+            <option value="10">Parking Zone</option>
+            <option value="11">Reception Block</option>
+            <option value="12">Food Court</option>
+            <option value="13">Open Amphitheatre</option>
+            <option value="14">Football Court</option>
+            <option value="15">Main Gate</option>
+        </select>
+
+        <select id="destination">
+            <option value="0">AI Block</option>
+            <option value="1">Innovation Hub</option>
+            <option value="2">Central Library</option>
+            <option value="3">Research Center</option>
+            <option value="4">Hostel</option>
+            <option value="5">DKM Block</option>
+            <option value="6">Main Block</option>
+            <option value="7">Robotics Lab</option>
+            <option value="8">3D Galactic Area</option>
+            <option value="9">Sports Complex</option>
+            <option value="10">Parking Zone</option>
+            <option value="11">Reception Block</option>
+            <option value="12">Food Court</option>
+            <option value="13">Open Amphitheatre</option>
+            <option value="14">Football Court</option>
+            <option value="15">Main Gate</option>
+        </select>
+
+        <button onclick="findRoute()">
+            Find Route
+        </button>
+
+    </div>
+
+    <div class="result">
+
+        <h2 id="distance">
+            Distance : --
+        </h2>
+
+        <h3 id="time">
+            Estimated Time : --
+        </h3>
+
+        <p id="path">
+            Route will appear here...
+        </p>
+
+    </div>
+
+    <div class="map-container">
+
+        <img src="campus-map.png" alt="Campus Map">
+
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
