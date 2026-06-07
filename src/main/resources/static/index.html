@@ -1,88 +1,356 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CIT Tech Campus Navigator</title>
-    <link rel="stylesheet" href="style.css">
+    <title>CIT Campus Navigator</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f8fafc; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
+
+        /* Premium Header Styling */
+        #hdr-container { width: 100%; background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); padding: 48px 24px 54px 24px; display: flex; flex-direction: column; align-items: center; border-bottom-left-radius: 32px; border-bottom-right-radius: 32px; box-shadow: 0 10px 30px -10px rgba(2, 132, 199, 0.3); }
+        #hdr-inner { width: 100%; max-width: 1050px; display: flex; flex-direction: column; gap: 14px; }
+        #hdr-badge { background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); padding: 6px 16px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; width: max-content; color: #e0f2fe; }
+        #hdr-title { font-size: 40px; font-weight: 900; letter-spacing: -0.03em; color: #ffffff; }
+        #hdr-title span { color: #bae6fd; }
+        #hdr-desc { font-size: 16px; font-weight: 500; color: #e0f2fe; line-height: 1.5; max-width: 800px; }
+
+        /* Algorithm Status Tag Line */
+        #algo-tagline { font-size: 13px; font-weight: 700; color: #bae6fd; letter-spacing: 0.08em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; margin-top: 2px; }
+        #algo-tagline::before { content: ''; display: inline-block; width: 8px; height: 8px; background: #34d399; border-radius: 50%; box-shadow: 0 0 8px #34d399; }
+
+        /* Application Space Layout */
+        #content-body { width: 100%; max-width: 1050px; padding: 32px 24px; display: flex; flex-direction: column; gap: 24px; }
+
+        /* Dynamic System Banner Hint */
+        #hint-bar { width: 100%; background: #ffffff; border-radius: 16px; padding: 18px 24px; display: flex; align-items: center; gap: 12px; box-shadow: 0 4px 20px -2px rgba(2, 132, 199, 0.06); border-left: 4px solid #0284c7; }
+        #hint { color: #475569; font-size: 15px; font-weight: 500; }
+        #hint b { color: #0284c7; font-weight: 700; }
+
+        /* Clean Map Base Wrapping */
+        #mapWrap { width: 100%; display: flex; justify-content: center; }
+        canvas { display: block; border-radius: 24px; width: 100%; height: auto; box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.08); cursor: default; background: #ffffff; border: 1px solid rgba(2, 132, 199, 0.08); }
+
+        /* Structured Output Metric Blocks */
+        #stats-row { width: 100%; display: grid; grid-template-columns: 200px 200px 1fr; gap: 24px; }
+        .stat-card { background: #ffffff; border-radius: 16px; padding: 22px 26px; box-shadow: 0 4px 20px -2px rgba(2, 132, 199, 0.06); display: flex; flex-direction: column; justify-content: center; border-top: 3px solid transparent; transition: border-color 0.3s ease; }
+        .stat-card.active { border-top-color: #0284c7; }
+        .sl { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; margin-bottom: 8px; }
+        .sv { font-size: 32px; font-weight: 800; color: #0f172a; line-height: 1; letter-spacing: -0.02em; }
+        #rpath { font-size: 15px; font-weight: 600; color: #0284c7; line-height: 1.6; }
+
+        /* Signature Footer Element Layout */
+        #ftr-credit { width: 100%; text-align: center; color: #94a3b8; font-size: 13px; font-weight: 600; padding: 40px 0 24px 0; margin-top: auto; }
+    </style>
 </head>
 <body>
 
-<div class="container">
+<div id="hdr-container">
+    <div id="hdr-inner">
+        <div id="hdr-badge">Cambridge Institute of Technology · Bengaluru</div>
 
-    <h1>CIT TECH CAMPUS NAVIGATOR</h1>
+        <div id="hdr-title">Campus <span>Navigator</span></div>
 
-    <div class="controls">
+        <div id="algo-tagline">This is made by Dijkstra algorithm</div>
 
-        <select id="source">
-            <option value="0">AI Block</option>
-            <option value="1">Innovation Hub</option>
-            <option value="2">Central Library</option>
-            <option value="3">Research Center</option>
-            <option value="4">Hostel</option>
-            <option value="5">DKM Block</option>
-            <option value="6">Main Block</option>
-            <option value="7">Robotics Lab</option>
-            <option value="8">3D Galactic Area</option>
-            <option value="9">Sports Complex</option>
-            <option value="10">Parking Zone</option>
-            <option value="11">Reception Block</option>
-            <option value="12">Food Court</option>
-            <option value="13">Open Amphitheatre</option>
-            <option value="14">Football Court</option>
-            <option value="15">Main Gate</option>
-        </select>
-
-        <select id="destination">
-            <option value="0">AI Block</option>
-            <option value="1">Innovation Hub</option>
-            <option value="2">Central Library</option>
-            <option value="3">Research Center</option>
-            <option value="4">Hostel</option>
-            <option value="5">DKM Block</option>
-            <option value="6">Main Block</option>
-            <option value="7">Robotics Lab</option>
-            <option value="8">3D Galactic Area</option>
-            <option value="9">Sports Complex</option>
-            <option value="10">Parking Zone</option>
-            <option value="11">Reception Block</option>
-            <option value="12">Food Court</option>
-            <option value="13">Open Amphitheatre</option>
-            <option value="14">Football Court</option>
-            <option value="15">Main Gate</option>
-        </select>
-
-        <button onclick="findRoute()">
-            Find Route
-        </button>
-
+        <div id="hdr-desc">
+            Find the shortest walking route between any two locations on campus.<br>
+            Click a node to set your start, then click your destination.
+        </div>
     </div>
-
-    <div class="result">
-
-        <h2 id="distance">
-            Distance : --
-        </h2>
-
-        <h3 id="time">
-            Estimated Time : --
-        </h3>
-
-        <p id="path">
-            Route will appear here...
-        </p>
-
-    </div>
-
-    <div class="map-container">
-
-        <img src="campus-map.png" alt="Campus Map">
-
-    </div>
-
 </div>
 
-<script src="script.js"></script>
+<div id="content-body">
+    <div id="hint-bar">
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="none" style="margin-top: 1px;">
+            <circle cx="8" cy="8" r="7" stroke="#0284c7" stroke-width="1.8"/>
+            <path d="M8 7v4M8 5h.01" stroke="#0284c7" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <div id="hint">Click any node on the map to set your <b>starting point</b></div>
+    </div>
 
+    <div id="mapWrap">
+        <canvas id="map"></canvas>
+    </div>
+
+    <div id="stats-row">
+        <div class="stat-card" id="card-dist">
+            <div class="sl">Distance</div>
+            <div class="sv" id="rdist">--</div>
+        </div>
+        <div class="stat-card" id="card-time">
+            <div class="sl">Est. Time</div>
+            <div class="sv" id="rtime">--</div>
+        </div>
+        <div class="stat-card" id="card-path">
+            <div class="sl">Route Path</div>
+            <div id="rpath">Select start &amp; destination on the map</div>
+        </div>
+    </div>
+
+    <div id="ftr-credit">
+        Done by Krishna B Dhamanekar
+    </div>
+</div>
+
+<script>
+    const CW = 900, CH = 560;
+    const canvas = document.getElementById('map');
+    canvas.width = CW; canvas.height = CH;
+    const ctx = canvas.getContext('2d');
+
+    const NAMES = {
+      0:"AI Block", 1:"Innovation Hub", 2:"Central Library", 3:"Research Center",
+      4:"Hostel", 5:"DKM Block", 6:"Main Block", 7:"Robotics Lab", 8:"3D Galactic Area",
+      9:"Sports Complex", 10:"Parking Zone", 11:"Reception Block",
+      12:"Food Court", 13:"Open Amphitheatre", 14:"Football Court", 15:"Main Gate"
+    };
+    const NID = Object.fromEntries(Object.entries(NAMES).map(([k,v]) => [v, +k]));
+
+    const P = {
+      0:[90,85],   1:[280,85],  2:[490,85],  3:[710,85],
+      4:[90,225],  5:[280,225], 6:[460,225], 7:[620,225], 8:[770,225],
+      9:[90,365],  10:[280,365],11:[460,365],12:[620,365],13:[770,365],
+      14:[90,475], 15:[400,475]
+    };
+
+    const MAIN = [
+      [0,1,60],[1,2,50],[2,3,60],
+      [4,5,60],[5,6,50],[6,7,60],[7,8,60],
+      [9,10,50],[10,11,40],[11,12,50],[12,13,60],
+      [14,15,80],
+      [0,4,40],[4,9,50],[9,14,50],
+      [1,5,40],[5,10,50],
+      [6,11,40],[11,15,40],
+      [2,7,40],[3,8,50],[8,13,60]
+    ];
+
+    const ALT = [
+      [0,5,70],[9,5,70],[1,7,70],[3,7,80],[7,13,70],[12,13,70],[12,15,70]
+    ];
+
+    let src = -1, dst = -1, hlPath = [], step = 0;
+    let hoverNode = -1;
+
+    function onPath(a, b) {
+      for (let i = 0; i < hlPath.length - 1; i++) {
+        const u = hlPath[i], v = hlPath[i+1];
+        if ((u===a && v===b) || (u===b && v===a)) return true;
+      }
+      return false;
+    }
+
+    function drawBg() {
+      ctx.fillStyle = '#fdfefe';
+      ctx.fillRect(0, 0, CW, CH);
+
+      ctx.save();
+      ctx.strokeStyle = 'rgba(2, 132, 199, 0.05)';
+      ctx.lineWidth = 1;
+      for (let x = 0; x <= CW; x += 30) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, CH); ctx.stroke();
+      }
+      for (let y = 0; y <= CH; y += 30) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(CW, y); strokeStyle = 'rgba(2, 132, 199, 0.05)'; ctx.stroke();
+      }
+
+      for (let x = 0; x <= CW; x += 90) {
+        for (let y = 0; y <= CH; y += 90) {
+          ctx.beginPath(); ctx.arc(x, y, 1.5, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(2, 132, 199, 0.18)';
+          ctx.fill();
+        }
+      }
+      ctx.restore();
+    }
+
+    function drawEdge(a, b, w, dashed) {
+      const [x1,y1] = P[a], [x2,y2] = P[b];
+      const hl = onPath(a, b);
+      ctx.save();
+
+      if (hl) {
+        ctx.setLineDash([]);
+        ctx.lineWidth = 12;
+        ctx.strokeStyle = 'rgba(14, 165, 233, 0.22)';
+        ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = '#0284c7';
+        ctx.stroke();
+      } else {
+        ctx.setLineDash(dashed ? [6,4] : []);
+        ctx.lineWidth = dashed ? 2.5 : 3.5;
+        ctx.strokeStyle = dashed ? '#94a3b8' : '#cbd5e1';
+        ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      if (!hl) {
+        const mx = (x1+x2)/2, my = (y1+y2)/2;
+        ctx.setLineDash([]);
+
+        ctx.font = '900 11px system-ui';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 4;
+        ctx.strokeText(w + 'm', mx, my);
+
+        ctx.fillStyle = '#1e293b';
+        ctx.fillText(w + 'm', mx, my);
+      }
+      ctx.restore();
+    }
+
+    function drawNode(id) {
+      const [x,y] = P[id];
+      const isSrc = id===src, isDst = id===dst, onHl = hlPath.includes(id);
+      const isHovered = id===hoverNode;
+      const r = 27;
+      ctx.save();
+
+      ctx.shadowColor = 'rgba(15, 23, 42, 0.12)';
+      ctx.shadowBlur = 14;
+      ctx.shadowOffsetY = 5;
+
+      if (isSrc || isDst || onHl || isHovered) {
+        ctx.beginPath(); ctx.arc(x, y, r + 10, 0, Math.PI*2);
+        ctx.fillStyle = isSrc ? 'rgba(16, 185, 129, 0.16)' : isDst ? 'rgba(239, 68, 68, 0.16)' : 'rgba(2, 132, 199, 0.12)';
+        ctx.fill();
+      }
+
+      ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2);
+      ctx.fillStyle = isSrc ? '#10b981' : isDst ? '#ef4444' : onHl ? '#0284c7' : '#ffffff';
+      ctx.fill();
+
+      ctx.shadowColor = 'transparent';
+      ctx.strokeStyle = isSrc ? '#047857' : isDst ? '#b91c1c' : onHl ? '#0369a1' : isHovered ? '#0284c7' : '#1e293b';
+      ctx.lineWidth = isHovered || onHl || isSrc || isDst ? 3.5 : 2.5;
+      ctx.stroke();
+
+      ctx.font = '900 10px system-ui';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillStyle = (isSrc || isDst || onHl) ? '#ffffff' : '#0f172a';
+
+      const words = NAMES[id].split(' ');
+      if (words.length === 1) {
+        ctx.fillText(words[0], x, y);
+      } else if (words.length === 2) {
+        ctx.fillText(words[0], x, y - 6);
+        ctx.fillText(words[1], x, y + 6);
+      } else {
+        ctx.fillText(words.slice(0,2).join(' '), x, y - 6);
+        ctx.fillText(words.slice(2).join(' '), x, y + 6);
+      }
+
+      if (isSrc || isDst) {
+        const label = isSrc ? 'START' : 'END';
+        const bw = isSrc ? 44 : 36;
+        ctx.beginPath(); ctx.roundRect(x - bw/2, y - r - 24, bw, 16, 4);
+        ctx.fillStyle = isSrc ? '#10b981' : '#ef4444'; ctx.fill();
+
+        ctx.font = '900 8px system-ui'; ctx.fillStyle = '#fff';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(label, x, y - r - 15);
+      }
+      ctx.restore();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, CW, CH);
+      drawBg();
+      MAIN.forEach(([a,b,w]) => drawEdge(a, b, w, false));
+      ALT.forEach(([a,b,w])  => drawEdge(a, b, w, true));
+      for (let i = 0; i < 16; i++) drawNode(i);
+    }
+
+    function hitNode(mx, my) {
+      for (let id = 0; id < 16; id++) {
+        const [nx,ny] = P[id];
+        if (Math.hypot(mx-nx, my-ny) < 30) return id;
+      }
+      return -1;
+    }
+
+    canvas.addEventListener('mousemove', e => {
+      const r = canvas.getBoundingClientRect();
+      const mx = (e.clientX - r.left) * (CW / r.width);
+      const my = (e.clientY - r.top)  * (CH / r.height);
+      const oldHover = hoverNode;
+      hoverNode = hitNode(mx, my);
+      canvas.style.cursor = hoverNode !== -1 ? 'pointer' : 'default';
+      if(oldHover !== hoverNode) draw();
+    });
+
+    canvas.addEventListener('click', async e => {
+      const r = canvas.getBoundingClientRect();
+      const mx = (e.clientX - r.left) * (CW / r.width);
+      const my = (e.clientY - r.top)  * (CH / r.height);
+      const n = hitNode(mx, my);
+      if (n === -1) return;
+
+      const hint  = document.getElementById('hint');
+      const rpath = document.getElementById('rpath');
+
+      const cDist = document.getElementById('card-dist');
+      const cTime = document.getElementById('card-time');
+      const cPath = document.getElementById('card-path');
+
+      if (step === 0) {
+        src = n; dst = -1; hlPath = []; step = 1;
+        hint.innerHTML = `From: <b>${NAMES[n]}</b> — now click your <b>destination</b>`;
+        document.getElementById('rdist').textContent = '--';
+        document.getElementById('rtime').textContent = '--';
+        rpath.textContent = 'Now select a destination...';
+
+        [cDist, cTime, cPath].forEach(c => c.classList.remove('active'));
+        draw(); return;
+      }
+
+      if (n === src) {
+        hint.innerHTML = 'Same node — pick a <b>different destination</b>';
+        return;
+      }
+
+      dst = n; step = 0;
+      hint.textContent = 'Finding shortest path...';
+
+      try {
+        const res  = await fetch(`/api/route?source=${src}&destination=${dst}`);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+
+        if (data.totalDistance === -1) {
+          document.getElementById('rdist').textContent = 'No path';
+          document.getElementById('rtime').textContent = '--';
+          rpath.textContent = 'No route between these locations.';
+          hlPath = [];
+          [cDist, cTime, cPath].forEach(c => c.classList.remove('active'));
+        } else {
+          document.getElementById('rdist').textContent = data.totalDistance + 'm';
+          document.getElementById('rtime').textContent = (data.totalDistance / 80).toFixed(1) + ' min';
+          rpath.textContent = data.path.join(' → ');
+          hlPath = data.path.map(name => NID[name]);
+
+          [cDist, cTime, cPath].forEach(c => c.classList.add('active'));
+        }
+        hint.innerHTML = 'Click any node to start a <b>new route</b>';
+        draw();
+      } catch (err) {
+        hint.textContent = 'Connection issue detected with endpoint services.';
+        rpath.textContent = err.message;
+      }
+    });
+
+    draw();
+</script>
 </body>
 </html>
+
+```
