@@ -1,7 +1,7 @@
 services:
   - type: web
     name: campus-navigator
-    runtime: java
+    env: java
     buildCommand: ./mvnw clean package
     startCommand: java -jar target/*.jar
     plan: free
