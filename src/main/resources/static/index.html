@@ -1,8 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CIT Tech Campus Navigator</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -25,16 +26,16 @@
 
         /* Dynamic System Banner Hint */
         #hint-bar { width: 100%; background: #ffffff; border-radius: 16px; padding: 18px 24px; display: flex; align-items: center; gap: 12px; box-shadow: 0 4px 20px -2px rgba(2, 132, 199, 0.06); border-left: 4px solid #0284c7; }
-        #hint { color: #475569; font-size: 15px; font-weight: 500; }
+        #hint { color: #475569; font-size: 15px; font-weight: 500; flex: 1; }
         #hint b { color: #0284c7; font-weight: 700; }
 
         /* Clean Map Base Wrapping */
         #mapWrap { width: 100%; display: flex; justify-content: center; position: relative; }
-        canvas { display: block; border-radius: 24px; width: 100%; height: auto; box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.08); cursor: default; background: #ffffff; border: 1px solid rgba(2, 132, 199, 0.08); }
+        canvas { display: block; border-radius: 24px; width: 100%; height: auto; box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.08); cursor: default; background: #ffffff; border: 1px solid rgba(2, 132, 199, 0.08); touch-action: none; }
 
         /* Weighted Formula Info Box */
-        #formula-bar { background: #ffffff; border-radius: 16px; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 20px -2px rgba(2, 132, 199, 0.06); font-size: 13px; color: #64748b; font-weight: 500; border-top: 1px solid rgba(2, 132, 199, 0.05); }
-        #formula-bar code { font-family: monospace; font-size: 14px; color: #0284c7; font-weight: 700; }
+        #formula-bar { background: #ffffff; border-radius: 16px; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 20px -2px rgba(2, 132, 199, 0.06); font-size: 13px; color: #64748b; font-weight: 500; border-top: 1px solid rgba(2, 132, 199, 0.05); gap: 12px; }
+        #formula-bar code { font-family: monospace; font-size: 14px; color: #0284c7; font-weight: 700; white-space: nowrap; }
 
         /* Structured Output Metric Blocks Grid */
         #stats-row { width: 100%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
@@ -53,14 +54,36 @@
         .traffic-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444); transition: width 0.4s ease; }
 
         /* Control UI Actions */
-        .clear-btn { background: #ffffff; border: 1px solid #cbd5e1; color: #64748b; border-radius: 12px; padding: 10px 18px; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px; margin-left: auto; }
+        .clear-btn { background: #ffffff; border: 1px solid #cbd5e1; color: #64748b; border-radius: 12px; padding: 10px 18px; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
         .clear-btn:hover { background: #f1f5f9; color: #ef4444; border-color: #fca5a5; }
 
         #ftr-credit { width: 100%; text-align: center; color: #94a3b8; font-size: 13px; font-weight: 600; padding: 24px 0; margin-top: auto; }
 
-        @media(max-width: 850px) {
+        /* Responsive Breakpoints Rules */
+        @media (max-width: 768px) {
+            #hdr-container { padding: 36px 20px 42px 20px; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; }
+            #hdr-title { font-size: 30px; }
+            #hdr-desc { font-size: 14px; }
+            #content-body { padding: 20px 16px; gap: 20px; }
+
+            #hint-bar { flex-direction: column; align-items: stretch; text-align: center; padding: 16px; gap: 14px; }
+            #hint-bar svg { display: none; }
+            .clear-btn { justify-content: center; }
+
+            #formula-bar { flex-direction: column; gap: 8px; text-align: center; }
+
+            #stats-row { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            #card-weight { grid-column: span 1; }
+            #card-dist { grid-column: span 1; }
+            #card-time { grid-column: span 1; }
+            #card-traffic { grid-column: span 1; }
+            #card-path { grid-column: span 2; }
+            .sv { font-size: 24px; }
+        }
+
+        @media (max-width: 48px) {
             #stats-row { grid-template-columns: 1fr; }
-            #card-path { grid-column: span 1; }
+            #card-weight, #card-dist, #card-time, #card-traffic, #card-path { grid-column: span 1; }
         }
     </style>
 </head>
@@ -72,7 +95,7 @@
         <div id="hdr-title">Campus <span>Navigator</span></div>
         <div id="algo-tagline">Shortest Path Navigation Using Dijkstra's Algorithm</div>
         <div id="hdr-desc">
-            A Spring Boot-based web application that finds the optimal route between campus locations using Dijkstra's Algorithm. The campus is modeled as a graph where locations are nodes and pathways are edges with distance, travel time, and traffic attributes. The system calculates the best route using a composite weight formula and provides real-time path visualization through an interactive frontend interface.
+            A Spring Boot-based web application that finds the optimal route between campus locations using Dijkstra's Algorithm. The campus is modeled as a graph where locations are nodes and pathways are edges with distance, travel time, and traffic attributes.
         </div>
     </div>
 </div>
@@ -92,7 +115,7 @@
     </div>
 
     <div id="formula-bar">
-        <span>Cost Metric Configuration Optimization Array:</span>
+        <span>Cost Metric Config:</span>
         <span><code>W = 1.0×Dist + 0.5×Time + 2.0×Traffic</code></span>
     </div>
 
@@ -142,7 +165,6 @@
     };
     const NID = Object.fromEntries(Object.entries(NAMES).map(([k,v]) => [v, +k]));
 
-    // Node locations updated to seamlessly fill the new spatial map matrix size coordinates
     const P = {
       0:[90,85],   1:[280,85],  2:[490,85],  3:[710,85],
       4:[90,225],  5:[280,225], 6:[460,225], 7:[620,225], 8:[770,225],
@@ -333,21 +355,29 @@
       draw();
     }
 
-    canvas.addEventListener('mousemove', e => {
+    // Normalized touch mapping coordinate converter
+    function getCanvasCoordinates(e) {
       const r = canvas.getBoundingClientRect();
-      const mx = (e.clientX - r.left) * (CW / r.width);
-      const my = (e.clientY - r.top)  * (CH / r.height);
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return {
+        x: (clientX - r.left) * (CW / r.width),
+        y: (clientY - r.top) * (CH / r.height)
+      };
+    }
+
+    canvas.addEventListener('mousemove', e => {
+      const coords = getCanvasCoordinates(e);
       const oldHover = hoverNode;
-      hoverNode = hitNode(mx, my);
+      hoverNode = hitNode(coords.x, coords.y);
       canvas.style.cursor = hoverNode !== -1 ? 'pointer' : 'default';
       if(oldHover !== hoverNode) draw();
     });
 
-    canvas.addEventListener('click', async e => {
-      const r = canvas.getBoundingClientRect();
-      const mx = (e.clientX - r.left) * (CW / r.width);
-      const my = (e.clientY - r.top)  * (CH / r.height);
-      const n = hitNode(mx, my);
+    // Unified interactive pointer click function wrapper
+    async function handleMapPointer(e) {
+      const coords = getCanvasCoordinates(e);
+      const n = hitNode(coords.x, coords.y);
       if (n === -1) return;
 
       const hint  = document.getElementById('hint');
@@ -417,7 +447,13 @@
         rpath.textContent = err.message;
         rpath.style.color = '#ef4444';
       }
-    });
+    }
+
+    canvas.addEventListener('click', handleMapPointer);
+    canvas.addEventListener('touchstart', e => {
+      e.preventDefault();
+      handleMapPointer(e);
+    }, { passive: false });
 
     draw();
 </script>
