@@ -4,26 +4,36 @@ import java.util.List;
 
 public class RouteResponse {
 
-    private int totalDistance;
+    private double totalWeight;    // composite cost
+    private int    totalDistance;  // metres
+    private int    totalTime;      // minutes
+    private int    totalTraffic;   // sum of traffic scores
     private List<String> path;
 
-    public RouteResponse(int totalDistance, List<String> path) {
+    public RouteResponse(double totalWeight,
+                         int totalDistance,
+                         int totalTime,
+                         int totalTraffic,
+                         List<String> path) {
+        this.totalWeight   = totalWeight;
         this.totalDistance = totalDistance;
-        this.path = path;
+        this.totalTime     = totalTime;
+        this.totalTraffic  = totalTraffic;
+        this.path          = path;
     }
 
-    public int getTotalDistance() {
-        return totalDistance;
-    }
+    public double       getTotalWeight()   { return totalWeight; }
+    public int          getTotalDistance() { return totalDistance; }
+    public int          getTotalTime()     { return totalTime; }
+    public int          getTotalTraffic()  { return totalTraffic; }
+    public List<String> getPath()          { return path; }
 
-    public List<String> getPath() {
-        return path;
-    }
     @Override
     public String toString() {
-        return "RouteResponse{" +
-                "totalDistance=" + totalDistance +
-                ", path=" + path +
-                '}';
+        return "RouteResponse{weight=" + totalWeight +
+                ", distance=" + totalDistance +
+                ", time=" + totalTime +
+                ", traffic=" + totalTraffic +
+                ", path=" + path + "}";
     }
 }

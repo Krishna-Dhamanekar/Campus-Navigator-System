@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CIT Campus Navigator</title>
+    <title>CIT Tech Campus Navigator</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: system-ui, -apple-system, sans-serif; background: #f8fafc; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
@@ -30,19 +29,39 @@
         #hint b { color: #0284c7; font-weight: 700; }
 
         /* Clean Map Base Wrapping */
-        #mapWrap { width: 100%; display: flex; justify-content: center; }
+        #mapWrap { width: 100%; display: flex; justify-content: center; position: relative; }
         canvas { display: block; border-radius: 24px; width: 100%; height: auto; box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.08); cursor: default; background: #ffffff; border: 1px solid rgba(2, 132, 199, 0.08); }
 
-        /* Structured Output Metric Blocks */
-        #stats-row { width: 100%; display: grid; grid-template-columns: 200px 200px 1fr; gap: 24px; }
-        .stat-card { background: #ffffff; border-radius: 16px; padding: 22px 26px; box-shadow: 0 4px 20px -2px rgba(2, 132, 199, 0.06); display: flex; flex-direction: column; justify-content: center; border-top: 3px solid transparent; transition: border-color 0.3s ease; }
-        .stat-card.active { border-top-color: #0284c7; }
-        .sl { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; margin-bottom: 8px; }
-        .sv { font-size: 32px; font-weight: 800; color: #0f172a; line-height: 1; letter-spacing: -0.02em; }
-        #rpath { font-size: 15px; font-weight: 600; color: #0284c7; line-height: 1.6; }
+        /* Weighted Formula Info Box */
+        #formula-bar { background: #ffffff; border-radius: 16px; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 20px -2px rgba(2, 132, 199, 0.06); font-size: 13px; color: #64748b; font-weight: 500; border-top: 1px solid rgba(2, 132, 199, 0.05); }
+        #formula-bar code { font-family: monospace; font-size: 14px; color: #0284c7; font-weight: 700; }
 
-        /* Signature Footer Element Layout */
-        #ftr-credit { width: 100%; text-align: center; color: #94a3b8; font-size: 13px; font-weight: 600; padding: 40px 0 24px 0; margin-top: auto; }
+        /* Structured Output Metric Blocks Grid */
+        #stats-row { width: 100%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        .stat-card { background: #ffffff; border-radius: 16px; padding: 20px 22px; box-shadow: 0 4px 20px -2px rgba(2, 132, 199, 0.06); display: flex; flex-direction: column; justify-content: center; border-top: 3px solid transparent; transition: border-color 0.3s ease; }
+        .stat-card.active { border-top-color: #0284c7; }
+        .stat-card.accent.active { border-top-color: #f59e0b; }
+        .sl { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; margin-bottom: 8px; }
+        .sv { font-size: 28px; font-weight: 800; color: #0f172a; line-height: 1; letter-spacing: -0.02em; }
+        .su { font-size: 11px; color: #94a3b8; margin-top: 4px; font-weight: 500; }
+
+        #card-path { grid-column: span 4; }
+        #rpath { font-size: 15px; font-weight: 600; color: #64748b; line-height: 1.6; }
+
+        /* Traffic Meter Accent Bar */
+        .traffic-bar-wrap { margin-top: 10px; height: 5px; background: #e2e8f0; border-radius: 10px; overflow: hidden; width: 100%; }
+        .traffic-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444); transition: width 0.4s ease; }
+
+        /* Control UI Actions */
+        .clear-btn { background: #ffffff; border: 1px solid #cbd5e1; color: #64748b; border-radius: 12px; padding: 10px 18px; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px; margin-left: auto; }
+        .clear-btn:hover { background: #f1f5f9; color: #ef4444; border-color: #fca5a5; }
+
+        #ftr-credit { width: 100%; text-align: center; color: #94a3b8; font-size: 13px; font-weight: 600; padding: 24px 0; margin-top: auto; }
+
+        @media(max-width: 850px) {
+            #stats-row { grid-template-columns: 1fr; }
+            #card-path { grid-column: span 1; }
+        }
     </style>
 </head>
 <body>
@@ -50,13 +69,10 @@
 <div id="hdr-container">
     <div id="hdr-inner">
         <div id="hdr-badge">Cambridge Institute of Technology · Bengaluru</div>
-
         <div id="hdr-title">Campus <span>Navigator</span></div>
-
         <div id="algo-tagline">Shortest Path Navigation Using Dijkstra's Algorithm</div>
-
         <div id="hdr-desc">
-            Smart Campus Navigator – A Spring Boot web application that helps users find the shortest route between campus locations using Dijkstra's Algorithm. Developed REST APIs and integrated a frontend interface for real-time campus navigation
+            A Spring Boot-based web application that finds the optimal route between campus locations using Dijkstra's Algorithm. The campus is modeled as a graph where locations are nodes and pathways are edges with distance, travel time, and traffic attributes. The system calculates the best route using a composite weight formula and provides real-time path visualization through an interactive frontend interface.
         </div>
     </div>
 </div>
@@ -68,24 +84,42 @@
             <path d="M8 7v4M8 5h.01" stroke="#0284c7" stroke-width="1.8" stroke-linecap="round"/>
         </svg>
         <div id="hint">Click any node on the map to set your <b>starting point</b></div>
+        <button class="clear-btn" onclick="clearRoute()">↺ Clear Route</button>
     </div>
 
     <div id="mapWrap">
         <canvas id="map"></canvas>
     </div>
 
+    <div id="formula-bar">
+        <span>Cost Metric Configuration Optimization Array:</span>
+        <span><code>W = 1.0×Dist + 0.5×Time + 2.0×Traffic</code></span>
+    </div>
+
     <div id="stats-row">
+        <div class="stat-card" id="card-weight">
+            <div class="sl">Composite Cost</div>
+            <div class="sv" id="rweight">--</div>
+            <div class="su" id="rweight-unit">cost index</div>
+        </div>
         <div class="stat-card" id="card-dist">
             <div class="sl">Distance</div>
             <div class="sv" id="rdist">--</div>
+            <div class="su" id="rdist-unit">meters</div>
         </div>
         <div class="stat-card" id="card-time">
-            <div class="sl">Est. Time</div>
+            <div class="sl">Travel Time</div>
             <div class="sv" id="rtime">--</div>
+            <div class="su" id="rtime-unit">minutes</div>
+        </div>
+        <div class="stat-card accent" id="card-traffic">
+            <div class="sl">Traffic Score</div>
+            <div class="sv" id="rtraffic">--</div>
+            <div class="traffic-bar-wrap"><div class="traffic-bar" id="trafficBar"></div></div>
         </div>
         <div class="stat-card" id="card-path">
-            <div class="sl">Route Path</div>
-            <div id="rpath">Select start &amp; destination on the map</div>
+            <div class="sl">Optimal Route Path Sequence</div>
+            <div id="rpath">Select two points on the dynamic campus map matrix to begin calculation tracking.</div>
         </div>
     </div>
 
@@ -108,6 +142,7 @@
     };
     const NID = Object.fromEntries(Object.entries(NAMES).map(([k,v]) => [v, +k]));
 
+    // Node locations updated to seamlessly fill the new spatial map matrix size coordinates
     const P = {
       0:[90,85],   1:[280,85],  2:[490,85],  3:[710,85],
       4:[90,225],  5:[280,225], 6:[460,225], 7:[620,225], 8:[770,225],
@@ -115,20 +150,11 @@
       14:[90,475], 15:[400,475]
     };
 
-    const MAIN = [
-      [0,1,60],[1,2,50],[2,3,60],
-      [4,5,60],[5,6,50],[6,7,60],[7,8,60],
-      [9,10,50],[10,11,40],[11,12,50],[12,13,60],
-      [14,15,80],
-      [0,4,40],[4,9,50],[9,14,50],
-      [1,5,40],[5,10,50],
-      [6,11,40],[11,15,40],
-      [2,7,40],[3,8,50],[8,13,60]
-    ];
+    const MAIN = [[0,1],[1,2],[2,3],[4,5],[5,6],[6,7],[7,8],[9,10],[10,11],[11,12],[12,13],[14,15],[0,4],[4,9],[9,14],[1,5],[5,10],[6,11],[11,15],[2,7],[3,8],[8,13]];
+    const ALT = [[0,5],[9,5],[1,7],[3,7],[7,13],[12,13],[12,15]];
 
-    const ALT = [
-      [0,5,70],[9,5,70],[1,7,70],[3,7,80],[7,13,70],[12,13,70],[12,15,70]
-    ];
+    const EDGE_W = {};
+    [[0,1,60],[1,2,50],[2,3,60],[4,5,60],[5,6,50],[6,7,60],[7,8,60],[9,10,50],[10,11,40],[11,12,50],[12,13,60],[14,15,80],[0,4,40],[4,9,50],[9,14,50],[1,5,40],[5,10,50],[6,11,40],[11,15,40],[2,7,40],[3,8,50],[8,13,60],[0,5,70],[9,5,70],[1,7,70],[3,7,80],[7,13,70],[12,13,70],[12,15,70]].forEach(([a,b,w])=>{EDGE_W[a+'-'+b]=w;EDGE_W[b+'-'+a]=w;});
 
     let src = -1, dst = -1, hlPath = [], step = 0;
     let hoverNode = -1;
@@ -152,7 +178,7 @@
         ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, CH); ctx.stroke();
       }
       for (let y = 0; y <= CH; y += 30) {
-        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(CW, y); strokeStyle = 'rgba(2, 132, 199, 0.05)'; ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(CW, y); ctx.stroke();
       }
 
       for (let x = 0; x <= CW; x += 90) {
@@ -165,7 +191,7 @@
       ctx.restore();
     }
 
-    function drawEdge(a, b, w, dashed) {
+    function drawEdge(a, b, dashed) {
       const [x1,y1] = P[a], [x2,y2] = P[b];
       const hl = onPath(a, b);
       ctx.save();
@@ -190,6 +216,7 @@
       }
 
       if (!hl) {
+        const w = EDGE_W[a+'-'+b] || '';
         const mx = (x1+x2)/2, my = (y1+y2)/2;
         ctx.setLineDash([]);
 
@@ -204,6 +231,14 @@
         ctx.fillStyle = '#1e293b';
         ctx.fillText(w + 'm', mx, my);
       }
+      ctx.restore();
+    }
+
+    function drawArrow(x1, y1, x2, y2) {
+      const a = Math.atan2(y2-y1, x2-x1), mx = (x1+x2)/2, my = (y1+y2)/2;
+      ctx.save(); ctx.translate(mx, my); ctx.rotate(a);
+      ctx.fillStyle = '#0284c7';
+      ctx.beginPath(); ctx.moveTo(8, 0); ctx.lineTo(-4, -4); ctx.lineTo(-4, 4); ctx.closePath(); ctx.fill();
       ctx.restore();
     }
 
@@ -264,8 +299,14 @@
     function draw() {
       ctx.clearRect(0, 0, CW, CH);
       drawBg();
-      MAIN.forEach(([a,b,w]) => drawEdge(a, b, w, false));
-      ALT.forEach(([a,b,w])  => drawEdge(a, b, w, true));
+      MAIN.forEach(([a,b]) => drawEdge(a, b, false));
+      ALT.forEach(([a,b])  => drawEdge(a, b, true));
+      if (hlPath.length > 1) {
+        for (let i = 0; i < hlPath.length - 1; i++) {
+          const [x1,y1] = P[hlPath[i]], [x2,y2] = P[hlPath[i+1]];
+          drawArrow(x1, y1, x2, y2);
+        }
+      }
       for (let i = 0; i < 16; i++) drawNode(i);
     }
 
@@ -275,6 +316,21 @@
         if (Math.hypot(mx-nx, my-ny) < 30) return id;
       }
       return -1;
+    }
+
+    function clearRoute() {
+      src = -1; dst = -1; hlPath = []; step = 0;
+      document.getElementById('hint').innerHTML = 'Click any node on the map to set your <b>starting point</b>';
+      ['rweight', 'rdist', 'rtime', 'rtraffic'].forEach(id => document.getElementById(id).textContent = '--');
+      document.getElementById('trafficBar').style.width = '0%';
+      const rpath = document.getElementById('rpath');
+      rpath.textContent = 'Select two points on the dynamic campus map matrix to begin calculation tracking.';
+      rpath.style.color = '#64748b';
+
+      ['card-weight', 'card-dist', 'card-time', 'card-traffic', 'card-path'].forEach(id => {
+        document.getElementById(id).classList.remove('active');
+      });
+      draw();
     }
 
     canvas.addEventListener('mousemove', e => {
@@ -297,53 +353,69 @@
       const hint  = document.getElementById('hint');
       const rpath = document.getElementById('rpath');
 
+      const cWeight = document.getElementById('card-weight');
       const cDist = document.getElementById('card-dist');
       const cTime = document.getElementById('card-time');
+      const cTraffic = document.getElementById('card-traffic');
       const cPath = document.getElementById('card-path');
+      const cards = [cWeight, cDist, cTime, cTraffic, cPath];
 
       if (step === 0) {
         src = n; dst = -1; hlPath = []; step = 1;
         hint.innerHTML = `From: <b>${NAMES[n]}</b> — now click your <b>destination</b>`;
-        document.getElementById('rdist').textContent = '--';
-        document.getElementById('rtime').textContent = '--';
-        rpath.textContent = 'Now select a destination...';
+        ['rweight', 'rdist', 'rtime', 'rtraffic'].forEach(id => document.getElementById(id).textContent = '--');
+        document.getElementById('trafficBar').style.width = '0%';
+        rpath.textContent = 'Now select a destination on the map workspace...';
+        rpath.style.color = '#0284c7';
 
-        [cDist, cTime, cPath].forEach(c => c.classList.remove('active'));
+        cards.forEach(c => c.classList.remove('active'));
         draw(); return;
       }
 
       if (n === src) {
-        hint.innerHTML = 'Same node — pick a <b>different destination</b>';
+        hint.innerHTML = 'Same node chosen — pick a <b>different destination node</b>';
         return;
       }
 
       dst = n; step = 0;
-      hint.textContent = 'Finding shortest path...';
+      hint.textContent = 'Querying engine for telemetry path arrays...';
 
       try {
-        const res  = await fetch(`/api/route?source=${src}&destination=${dst}`);
+        const res = await fetch(`/api/route?source=${src}&destination=${dst}`);
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
 
-        if (data.totalDistance === -1) {
-          document.getElementById('rdist').textContent = 'No path';
+        if (data.totalWeight === -1 || data.totalDistance === -1) {
+          document.getElementById('rweight').textContent = 'None';
+          document.getElementById('rdist').textContent = '--';
           document.getElementById('rtime').textContent = '--';
-          rpath.textContent = 'No route between these locations.';
+          document.getElementById('rtraffic').textContent = '--';
+          document.getElementById('trafficBar').style.width = '0%';
+          rpath.textContent = 'No route metrics returned between these matrix references.';
+          rpath.style.color = '#ef4444';
           hlPath = [];
-          [cDist, cTime, cPath].forEach(c => c.classList.remove('active'));
+          cards.forEach(c => c.classList.remove('active'));
         } else {
+          document.getElementById('rweight').textContent = data.totalWeight;
           document.getElementById('rdist').textContent = data.totalDistance + 'm';
-          document.getElementById('rtime').textContent = (data.totalDistance / 80).toFixed(1) + ' min';
+          document.getElementById('rtime').textContent = data.totalTime + 'm';
+          document.getElementById('rtraffic').textContent = data.totalTraffic;
+
+          const maxTraffic = 50;
+          document.getElementById('trafficBar').style.width = Math.min(100, (data.totalTraffic / maxTraffic) * 100) + '%';
+
           rpath.textContent = data.path.join(' → ');
+          rpath.style.color = '#0284c7';
           hlPath = data.path.map(name => NID[name]);
 
-          [cDist, cTime, cPath].forEach(c => c.classList.add('active'));
+          cards.forEach(c => c.classList.add('active'));
         }
-        hint.innerHTML = 'Click any node to start a <b>new route</b>';
+        hint.innerHTML = 'Route resolved successfully. Click any point to start a <b>new mapping sequence</b>';
         draw();
       } catch (err) {
         hint.textContent = 'Connection issue detected with endpoint services.';
         rpath.textContent = err.message;
+        rpath.style.color = '#ef4444';
       }
     });
 
